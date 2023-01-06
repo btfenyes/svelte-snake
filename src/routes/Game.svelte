@@ -12,12 +12,21 @@
 		getSnakeHead
 	} from '$lib/utils';
 	import type { Direction, Food, Position, Snake, SnakePart, Turn } from '$lib/types';
+	import { difficulty, mapSize } from '$lib/store';
 
-	const MAP_ROWS = 20;
-	const MAP_COLS = 20;
+	let mapRows: number;
+	let mapCols: number;
 
-	const startRow = Math.ceil(MAP_ROWS / 2);
-	const startCol = Math.ceil(MAP_COLS / 2);
+	mapSize.subscribe(({ rows, cols }) => {
+		mapRows = rows;
+		mapCols = cols;
+	});
+
+	let startRow: number;
+	let startCol: number;
+
+	$: startRow = Math.ceil(mapRows / 2);
+	$: startCol = Math.ceil(mapCols / 2);
 
 	const startLength = 5;
 	const startDirection: Direction = 'right';
@@ -48,13 +57,13 @@
 				...snakePart,
 				...(currentTurn && { direction: currentTurn.direction }),
 				...(newDirection === 'right' && {
-					col: snakePart.col === MAP_COLS ? 1 : snakePart.col + 1
+					col: snakePart.col === mapCols ? 1 : snakePart.col + 1
 				}),
 				...(newDirection === 'left' && {
-					col: snakePart.col === 1 ? MAP_COLS : snakePart.col - 1
+					col: snakePart.col === 1 ? mapCols : snakePart.col - 1
 				}),
-				...(newDirection === 'up' && { row: snakePart.row === 1 ? MAP_ROWS : snakePart.row - 1 }),
-				...(newDirection === 'down' && { row: snakePart.row === MAP_ROWS ? 1 : snakePart.row + 1 })
+				...(newDirection === 'up' && { row: snakePart.row === 1 ? mapRows : snakePart.row - 1 }),
+				...(newDirection === 'down' && { row: snakePart.row === mapRows ? 1 : snakePart.row + 1 })
 			};
 		}));
 
@@ -122,8 +131,8 @@
 		let row: number;
 
 		do {
-			col = getRandomInt(1, MAP_COLS);
-			row = getRandomInt(1, MAP_ROWS);
+			col = getRandomInt(1, mapCols);
+			row = getRandomInt(1, mapRows);
 		} while (snake.some((part) => part.col === col && part.row === row));
 
 		food = {
@@ -134,7 +143,7 @@
 
 	let gameOver = true;
 	const gameLoop = () => {
-		const isMaxSize = snake.length === MAP_COLS * MAP_ROWS;
+		const isMaxSize = snake.length === mapCols * mapRows;
 
 		const head = getSnakeHead(snake);
 		const isTailBite = snake
@@ -160,11 +169,16 @@
 		}
 	};
 
+	let gameSpeed: number;
+	difficulty.subscribe(({ speed }) => {
+		gameSpeed = speed;
+	});
+
 	let clear: NodeJS.Timer;
 	$: {
 		clearInterval(clear);
 		if (!gameOver) {
-			clear = setInterval(gameLoop, 80);
+			clear = setInterval(gameLoop, gameSpeed);
 		}
 	}
 
@@ -188,7 +202,7 @@
 <svelte:window on:keydown={onKeyDown} />
 
 <div>
-	<Map rows={MAP_ROWS} cols={MAP_COLS}>
+	<Map rows={mapRows} cols={mapCols}>
 		{#if food}
 			<div class="bg-yellow-900 w-4 h-4" style={getPositionStyle(food)} />
 		{/if}
