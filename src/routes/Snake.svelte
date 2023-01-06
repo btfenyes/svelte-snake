@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { getPositionStyle, type Snake } from '$lib/utils';
+	import type { Snake } from '$lib/types';
+	import { getPositionStyle } from '$lib/utils';
 
 	export let snake: Snake;
 </script>

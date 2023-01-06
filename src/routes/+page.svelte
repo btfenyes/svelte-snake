@@ -1,21 +1,17 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
+	import Map from './Map.svelte';
+	import SnakeComponent from './Snake.svelte';
+
 	import {
 		getPositionStyle,
 		isHorizontal,
 		isVertical,
-		type Direction,
-		type SnakePart,
-		type Turn,
-		type Snake,
 		getRandomInt,
-		type Position
+		getSnakeHead
 	} from '$lib/utils';
-	import Map from './Map.svelte';
-	import SnakeComponent from './Snake.svelte';
-
-	import { onMount } from 'svelte';
-
-	let turns: Turn[] = [];
+	import type { Direction, Food, Position, Snake, SnakePart, Turn } from '$lib/types';
 
 	const MAP_ROWS = 20;
 	const MAP_COLS = 20;
@@ -26,6 +22,7 @@
 	const startLength = 5;
 	const startDirection: Direction = 'right';
 
+	let turns: Turn[] = [];
 	let snake: Snake = [];
 
 	const initSnake = () => {
@@ -61,10 +58,6 @@
 			};
 		}));
 
-	const turn = (direction: Direction) => {
-		snake = snake.map((part, i) => (i === snake.length - 1 ? { ...part, direction } : part));
-	};
-
 	const growSnake = () => {
 		const tail = snake[0];
 
@@ -80,6 +73,10 @@
 		snake = [{ ...newTailPosition[tail.direction], direction: tail.direction }, ...snake];
 	};
 
+	const turn = (direction: Direction) => {
+		snake = snake.map((part, i) => (i === snake.length - 1 ? { ...part, direction } : part));
+	};
+
 	const onKeyDown = (e: KeyboardEvent) => {
 		const directionMap: Record<string, Direction> = {
 			ArrowLeft: 'left',
@@ -93,7 +90,7 @@
 		}
 
 		const turnDirection: Direction = directionMap[e.key];
-		const head = snake.at(-1) as SnakePart;
+		const head = getSnakeHead(snake);
 
 		if (
 			(isVertical(turnDirection) && isVertical(head.direction)) ||
@@ -117,11 +114,6 @@
 	const cleanUpTurns = () => {
 		turns = turns.filter((turn) => turn.passed !== snake.length);
 	};
-
-	interface Food {
-		col: number;
-		row: number;
-	}
 
 	let food: Food | null = null;
 
@@ -148,7 +140,7 @@
 
 		move();
 
-		const head = snake.at(-1) as SnakePart;
+		const head = getSnakeHead(snake);
 		if (
 			snake
 				.filter((_, index) => index !== snake.length - 1)
