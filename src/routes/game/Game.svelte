@@ -128,8 +128,6 @@
 		turns = turns.filter((turn) => turn.passed !== snake.length);
 	};
 
-	let food: Food | null = null;
-
 	const spawnFood = () => {
 		let col: number;
 		let row: number;
@@ -139,11 +137,13 @@
 			row = getRandomInt(1, mapRows);
 		} while (snake.some((part) => part.col === col && part.row === row));
 
-		food = {
+		return {
 			col,
 			row
 		};
 	};
+
+	let food: Food | null = spawnFood();
 
 	let gameOver = true;
 	const gameLoop = () => {
@@ -159,17 +159,13 @@
 			return;
 		}
 
-		if (!food) {
-			spawnFood();
-		}
-
 		move();
 
 		cleanUpTurns();
 
 		if (food && head.col === food.col && head.row === food.row) {
 			growSnake();
-			food = null;
+			food = spawnFood();
 		}
 	};
 
