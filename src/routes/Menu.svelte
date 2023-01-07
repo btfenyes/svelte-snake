@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { isGameRunning } from '$lib/store';
+	import { isGameRunningStore } from '$lib/store';
 	const menuItems = [
 		{
 			title: 'Start Game',

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	import Map from '../Map.svelte';
 	import SnakeComponent from '../Snake.svelte';
@@ -12,12 +12,12 @@
 		getSnakeHead
 	} from '$lib/utils';
 	import type { Direction, Food, Position, Snake, SnakePart, Turn } from '$lib/types';
-	import { difficulty, mapSize } from '$lib/store';
+	import { DIFFICULTIES, difficultyStore, mapSizeStore } from '$lib/store';
 
 	let mapRows: number;
 	let mapCols: number;
 
-	mapSize.subscribe(({ rows, cols }) => {
+	mapSizeStore.subscribe(({ rows, cols }) => {
 		mapRows = rows;
 		mapCols = cols;
 	});
@@ -43,7 +43,7 @@
 	};
 
 	const move = () =>
-		(snake = snake.map((snakePart) => {
+		(snake = snake.map((snakePart, i) => {
 			const isCurrentTurn = (turn: Turn, snakePart: SnakePart) =>
 				turn.col === snakePart.col && turn.row === snakePart.row;
 
@@ -53,6 +53,10 @@
 			turns = turns.map((turn) =>
 				isCurrentTurn(turn, snakePart) ? { ...turn, passed: turn.passed + 1 } : turn
 			);
+
+			if (i === snake.length - 1) {
+				console.log(mapCols, mapRows, snakePart.col);
+			}
 			return {
 				...snakePart,
 				...(currentTurn && { direction: currentTurn.direction }),
@@ -170,8 +174,8 @@
 	};
 
 	let gameSpeed: number;
-	difficulty.subscribe(({ speed }) => {
-		gameSpeed = speed;
+	difficultyStore.subscribe((storedDifficulty) => {
+		gameSpeed = DIFFICULTIES[storedDifficulty].speed;
 	});
 
 	let clear: NodeJS.Timer;
@@ -196,6 +200,9 @@
 
 	onMount(() => {
 		startGame();
+	});
+	onDestroy(() => {
+		clearInterval(clear);
 	});
 </script>
 

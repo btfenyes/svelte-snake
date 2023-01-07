@@ -1,11 +1,11 @@
 import { writable } from 'svelte/store';
 
-interface DifficultyParams {
+export interface DifficultySetting {
 	speed: number;
 	title: string;
 }
 
-export const DIFFICULTIES: Record<string, DifficultyParams> = {
+export const DIFFICULTIES = {
 	EASY: {
 		speed: 250,
 		title: 'Easy'
@@ -24,13 +24,13 @@ export const DIFFICULTIES: Record<string, DifficultyParams> = {
 	}
 } as const;
 
-export const difficulty = writable<DifficultyParams>(DIFFICULTIES.HARD);
-
-interface MapSize {
+export type Difficulty = keyof typeof DIFFICULTIES;
+export const difficultyStore = writable<Difficulty>('HARD');
+export interface MapSize {
 	rows: number;
 	cols: number;
 }
 
-export const mapSize = writable<MapSize>({ rows: 20, cols: 20 });
+export const mapSizeStore = writable<MapSize>({ rows: 20, cols: 20 });
 
-export const isGameRunning = writable(false);
+export const isGameRunningStore = writable(false);
