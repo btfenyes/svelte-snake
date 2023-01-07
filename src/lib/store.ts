@@ -15,7 +15,7 @@ export const DIFFICULTIES: Record<string, DifficultyParams> = {
 		title: 'Medium'
 	},
 	HARD: {
-		speed: 50,
+		speed: 80,
 		title: 'Hard'
 	},
 	EXTREME: {
@@ -24,7 +24,7 @@ export const DIFFICULTIES: Record<string, DifficultyParams> = {
 	}
 } as const;
 
-export const difficulty = writable<DifficultyParams>(DIFFICULTIES.EXTREME);
+export const difficulty = writable<DifficultyParams>(DIFFICULTIES.HARD);
 
 interface MapSize {
 	rows: number;
@@ -32,3 +32,5 @@ interface MapSize {
 }
 
 export const mapSize = writable<MapSize>({ rows: 20, cols: 20 });
+
+export const isGameRunning = writable(false);

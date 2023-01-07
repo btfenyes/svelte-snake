@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import Map from './Map.svelte';
-	import SnakeComponent from './Snake.svelte';
+	import Map from '../Map.svelte';
+	import SnakeComponent from '../Snake.svelte';
 
 	import {
 		getPositionStyle,
