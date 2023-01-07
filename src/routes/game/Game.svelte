@@ -14,19 +14,8 @@
 	import type { Direction, Food, Position, Snake, SnakePart, Turn } from '$lib/types';
 	import { DIFFICULTIES, difficultyStore, mapSizeStore } from '$lib/store';
 
-	let mapRows: number;
-	let mapCols: number;
-
-	mapSizeStore.subscribe(({ rows, cols }) => {
-		mapRows = rows;
-		mapCols = cols;
-	});
-
-	let startRow: number;
-	let startCol: number;
-
-	$: startRow = Math.ceil(mapRows / 2);
-	$: startCol = Math.ceil(mapCols / 2);
+	const startRow: number = Math.ceil($mapSizeStore.rows / 2);
+	const startCol: number = Math.ceil($mapSizeStore.cols / 2);
 
 	const startLength = 5;
 	const startDirection: Direction = 'right';
@@ -54,20 +43,21 @@
 				isCurrentTurn(turn, snakePart) ? { ...turn, passed: turn.passed + 1 } : turn
 			);
 
-			if (i === snake.length - 1) {
-				console.log(mapCols, mapRows, snakePart.col);
-			}
 			return {
 				...snakePart,
 				...(currentTurn && { direction: currentTurn.direction }),
 				...(newDirection === 'right' && {
-					col: snakePart.col === mapCols ? 1 : snakePart.col + 1
+					col: snakePart.col === $mapSizeStore.cols ? 1 : snakePart.col + 1
 				}),
 				...(newDirection === 'left' && {
-					col: snakePart.col === 1 ? mapCols : snakePart.col - 1
+					col: snakePart.col === 1 ? $mapSizeStore.cols : snakePart.col - 1
 				}),
-				...(newDirection === 'up' && { row: snakePart.row === 1 ? mapRows : snakePart.row - 1 }),
-				...(newDirection === 'down' && { row: snakePart.row === mapRows ? 1 : snakePart.row + 1 })
+				...(newDirection === 'up' && {
+					row: snakePart.row === 1 ? $mapSizeStore.rows : snakePart.row - 1
+				}),
+				...(newDirection === 'down' && {
+					row: snakePart.row === $mapSizeStore.rows ? 1 : snakePart.row + 1
+				})
 			};
 		}));
 
@@ -133,8 +123,8 @@
 		let row: number;
 
 		do {
-			col = getRandomInt(1, mapCols);
-			row = getRandomInt(1, mapRows);
+			col = getRandomInt(1, $mapSizeStore.cols);
+			row = getRandomInt(1, $mapSizeStore.rows);
 		} while (snake.some((part) => part.col === col && part.row === row));
 
 		return {
@@ -147,7 +137,7 @@
 
 	let gameOver = true;
 	const gameLoop = () => {
-		const isMaxSize = snake.length === mapCols * mapRows;
+		const isMaxSize = snake.length === $mapSizeStore.cols * $mapSizeStore.rows;
 
 		const head = getSnakeHead(snake);
 		const isTailBite = snake
@@ -169,16 +159,12 @@
 		}
 	};
 
-	let gameSpeed: number;
-	difficultyStore.subscribe((storedDifficulty) => {
-		gameSpeed = DIFFICULTIES[storedDifficulty].speed;
-	});
-
+	// TODO: Clear this up
 	let clear: NodeJS.Timer;
 	$: {
 		clearInterval(clear);
 		if (!gameOver) {
-			clear = setInterval(gameLoop, gameSpeed);
+			clear = setInterval(gameLoop, DIFFICULTIES[$difficultyStore].speed);
 		}
 	}
 
@@ -205,7 +191,7 @@
 <svelte:window on:keydown={onKeyDown} />
 
 <div>
-	<Map rows={mapRows} cols={mapCols}>
+	<Map rows={$mapSizeStore.rows} cols={$mapSizeStore.cols}>
 		{#if food}
 			<div class="bg-yellow-900 w-4 h-4" style={getPositionStyle(food)} />
 		{/if}

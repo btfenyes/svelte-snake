@@ -1,12 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import {
-		DIFFICULTIES,
-		difficultyStore,
-		mapSizeStore,
-		type Difficulty,
-		type MapSize
-	} from '$lib/store';
+	import { DIFFICULTIES, difficultyStore, mapSizeStore, type Difficulty } from '$lib/store';
 	import { createForm } from 'felte';
 
 	interface SettingsForm {
@@ -48,29 +42,13 @@
 					typeof values.cols === 'string' && { cols: parseInt(values.cols) })
 			} as SettingsForm)
 	});
-
-	let selectedDifficulty: Difficulty;
-	$: data.subscribe(({ difficulty }) => {
-		selectedDifficulty = difficulty;
-	});
-
-	let storedDifficulty: Difficulty;
-	$: difficultyStore.subscribe((difficulty) => {
-		storedDifficulty = difficulty;
-		selectedDifficulty = difficulty;
-	});
-
-	let mapSize: MapSize;
-	$: mapSizeStore.subscribe((storedMapSize) => {
-		mapSize = storedMapSize;
-	});
 </script>
 
 <form use:form class="flex flex-col m-auto gap-14 p-10 max-w-lg">
 	<div class="flex flex-col gap-4">
 		<h3 class="text-xl">Difficulty:</h3>
 		{#each Object.entries(DIFFICULTIES) as [key, { title }]}
-			{@const checked = key === selectedDifficulty}
+			{@const checked = key === ($data.difficulty ?? $difficultyStore)}
 			<div class="flex justify-between">
 				<label
 					class={`w-full p-4 cursor-pointer shadow-button border-2 border-black ${
@@ -98,7 +76,7 @@
 				type="text"
 				id="map-width"
 				name="cols"
-				value={mapSize.cols}
+				value={$mapSizeStore.cols}
 				on:input={(e) => {
 					e.currentTarget.value = e.currentTarget.value
 						.replace(/[^0-9.]/g, '')
@@ -119,7 +97,7 @@
 				type="text"
 				id="map-height"
 				name="rows"
-				value={mapSize.rows}
+				value={$mapSizeStore.rows}
 				on:input={(e) => {
 					e.currentTarget.value = e.currentTarget.value
 						.replace(/[^0-9.]/g, '')
