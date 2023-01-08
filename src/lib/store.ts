@@ -33,4 +33,11 @@ export interface MapSize {
 
 export const mapSizeStore = writable<MapSize>({ rows: 20, cols: 20 });
 
-export const isGameRunningStore = writable(false);
+interface Score {
+	playerName: string;
+	score: number;
+}
+
+export const scoresStore = writable<Score[]>([]);
+
+export const currentScoreStore = writable<number>(0);

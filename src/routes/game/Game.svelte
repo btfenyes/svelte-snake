@@ -12,7 +12,7 @@
 		getSnakeHead
 	} from '$lib/utils';
 	import type { Direction, Food, Position, Snake, SnakePart, Turn } from '$lib/types';
-	import { DIFFICULTIES, difficultyStore, mapSizeStore } from '$lib/store';
+	import { currentScoreStore, DIFFICULTIES, difficultyStore, mapSizeStore } from '$lib/store';
 
 	const startRow: number = Math.ceil($mapSizeStore.rows / 2);
 	const startCol: number = Math.ceil($mapSizeStore.cols / 2);
@@ -146,6 +146,7 @@
 
 		if (isTailBite || isMaxSize) {
 			gameOver = true;
+			currentScoreStore.set(0);
 			return;
 		}
 
@@ -155,6 +156,7 @@
 
 		if (food && head.col === food.col && head.row === food.row) {
 			growSnake();
+			currentScoreStore.update((score) => score + 50);
 			food = spawnFood();
 		}
 	};
@@ -190,17 +192,25 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
-<div>
-	<Map rows={$mapSizeStore.rows} cols={$mapSizeStore.cols}>
-		{#if food}
-			<div class="bg-yellow-900 w-4 h-4" style={getPositionStyle(food)} />
-		{/if}
-		<SnakeComponent {snake} />
-	</Map>
+<Map rows={$mapSizeStore.rows} cols={$mapSizeStore.cols}>
+	{#if food}
+		<div class="bg-yellow-900 w-4 h-4" style={getPositionStyle(food)} />
+	{/if}
+	<SnakeComponent {snake} />
+</Map>
+<div class="flex flex-col items-center gap-4 m-auto w-96 py-4">
+	<div class="w-fit flex gap-4">
+		<p>Score:</p>
+		<p>{$currentScoreStore}</p>
+	</div>
 	{#if gameOver}
 		<h1>Game Over</h1>
 	{/if}
 	{#if gameOver}
-		<button type="button" on:click={startGame}>Start</button>
+		<button
+			class="px-8 py-4 border-2 border-black shadow-button bg-amber-200"
+			type="button"
+			on:click={startGame}>Try again</button
+		>
 	{/if}
 </div>
