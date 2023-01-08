@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { isGameRunningStore } from '$lib/store';
+	import Button from '$lib/components/Button.svelte';
+
 	const menuItems = [
 		{
 			title: 'Start Game',
@@ -16,9 +16,7 @@
 <ul class="flex flex-col gap-4 w-fit text-center m-auto mt-10">
 	{#each menuItems as { href, title }}
 		<li>
-			<a class="block px-8 py-4 border-2 border-black shadow-button bg-amber-200" {href}>
-				{title.toUpperCase()}</a
-			>
+			<Button {href}>{title.toUpperCase()}</Button>
 		</li>
 	{/each}
 </ul>

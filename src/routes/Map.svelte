@@ -3,12 +3,12 @@
 	export let cols: number;
 </script>
 
-<main class="m-auto w-fit grid gap-1 bg-amber-100" style:--rows={rows} style:--cols={cols}>
+<div class="map m-auto w-fit grid gap-1 bg-amber-100" style:--rows={rows} style:--cols={cols}>
 	<slot />
-</main>
+</div>
 
 <style>
-	main {
+	.map {
 		grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
 		grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
 	}

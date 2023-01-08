@@ -13,6 +13,7 @@
 	} from '$lib/utils';
 	import type { Direction, Food, Position, Snake, SnakePart, Turn } from '$lib/types';
 	import { currentScoreStore, DIFFICULTIES, difficultyStore, mapSizeStore } from '$lib/store';
+	import Button from '$lib/components/Button.svelte';
 
 	const startRow: number = Math.ceil($mapSizeStore.rows / 2);
 	const startCol: number = Math.ceil($mapSizeStore.cols / 2);
@@ -207,10 +208,6 @@
 		<h1>Game Over</h1>
 	{/if}
 	{#if gameOver}
-		<button
-			class="px-8 py-4 border-2 border-black shadow-button bg-amber-200"
-			type="button"
-			on:click={startGame}>Try again</button
-		>
+		<Button on:click={startGame}>Try again</Button>
 	{/if}
 </div>

@@ -8,6 +8,9 @@ module.exports = {
 			},
 			maxWidth: {
 				'number-input': '5rem'
+			},
+			translate: {
+				'2px': '2px'
 			}
 		}
 	},

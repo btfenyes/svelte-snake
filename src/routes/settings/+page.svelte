@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { DIFFICULTIES, difficultyStore, mapSizeStore, type Difficulty } from '$lib/store';
 	import { createForm } from 'felte';
+	import Button from '$lib/components/Button.svelte';
 
 	interface SettingsForm {
 		difficulty: Difficulty;
@@ -111,7 +112,5 @@
 			{/each}
 		{/if}
 	</div>
-	<button type="submit" class="px-8 py-4 border-2 border-black shadow-button bg-amber-200"
-		>Save</button
-	>
+	<Button type="submit">Save</Button>
 </form>
