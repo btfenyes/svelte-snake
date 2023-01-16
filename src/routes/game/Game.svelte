@@ -37,7 +37,7 @@
 			const isCurrentTurn = (turn: Turn, snakePart: SnakePart) =>
 				turn.col === snakePart.col && turn.row === snakePart.row;
 
-			const currentTurn = turns.find((currentTurn) => isCurrentTurn(currentTurn, snakePart));
+			const currentTurn = turns.find((turn) => isCurrentTurn(turn, snakePart));
 			const newDirection = currentTurn?.direction ?? snakePart.direction;
 
 			turns = turns.map((turn) =>
@@ -136,7 +136,15 @@
 
 	let food: Food | null = spawnFood();
 
+	let interval: NodeJS.Timer;
+
 	let gameOver = true;
+	const endGame = () => {
+		gameOver = true;
+		clearInterval(interval);
+		currentScoreStore.set(0);
+	};
+
 	const gameLoop = () => {
 		const isMaxSize = snake.length === $mapSizeStore.cols * $mapSizeStore.rows;
 
@@ -146,8 +154,7 @@
 			.some((part) => part.row === head.row && part.col === head.col);
 
 		if (isTailBite || isMaxSize) {
-			gameOver = true;
-			currentScoreStore.set(0);
+			endGame();
 			return;
 		}
 
@@ -162,32 +169,19 @@
 		}
 	};
 
-	// TODO: Clear this up
-	let clear: NodeJS.Timer;
-	$: {
-		clearInterval(clear);
-		if (!gameOver) {
-			clear = setInterval(gameLoop, DIFFICULTIES[$difficultyStore].speed);
-		}
-	}
-
-	$: {
-		if (gameOver) {
-			clearInterval(clear);
-		}
-	}
-
 	const startGame = () => {
 		initSnake();
 		turns = [];
 		gameOver = false;
+		interval = setInterval(gameLoop, DIFFICULTIES[$difficultyStore].speed);
 	};
 
 	onMount(() => {
 		startGame();
 	});
+
 	onDestroy(() => {
-		clearInterval(clear);
+		endGame();
 	});
 </script>
 
@@ -206,8 +200,6 @@
 	</div>
 	{#if gameOver}
 		<h1>Game Over</h1>
-	{/if}
-	{#if gameOver}
 		<Button on:click={startGame}>Try again</Button>
 	{/if}
 </div>
