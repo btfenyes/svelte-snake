@@ -8,20 +8,20 @@ export interface DifficultySetting {
 export const DIFFICULTIES = {
 	EASY: {
 		speed: 250,
-		title: 'Easy'
+		title: 'Easy',
 	},
 	MEDIUM: {
 		speed: 125,
-		title: 'Medium'
+		title: 'Medium',
 	},
 	HARD: {
 		speed: 80,
-		title: 'Hard'
+		title: 'Hard',
 	},
 	EXTREME: {
 		speed: 35,
-		title: 'Extreme'
-	}
+		title: 'Extreme',
+	},
 } as const;
 
 export type Difficulty = keyof typeof DIFFICULTIES;

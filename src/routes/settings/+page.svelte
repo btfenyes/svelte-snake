@@ -40,8 +40,8 @@
 				...(typeof values === 'object' &&
 					values !== null &&
 					'cols' in values &&
-					typeof values.cols === 'string' && { cols: parseInt(values.cols) })
-			} as SettingsForm)
+					typeof values.cols === 'string' && { cols: parseInt(values.cols) }),
+			} as SettingsForm),
 	});
 </script>
 

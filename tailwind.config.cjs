@@ -4,15 +4,15 @@ module.exports = {
 	theme: {
 		extend: {
 			boxShadow: {
-				button: 'rgb(0, 0, 0) 3px 3px 0px 0px'
+				button: 'rgb(0, 0, 0) 3px 3px 0px 0px',
 			},
 			maxWidth: {
-				'number-input': '5rem'
+				'number-input': '5rem',
 			},
 			translate: {
-				'2px': '2px'
-			}
-		}
+				'2px': '2px',
+			},
+		},
 	},
-	plugins: []
+	plugins: [],
 };

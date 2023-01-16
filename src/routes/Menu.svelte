@@ -4,12 +4,12 @@
 	const menuItems = [
 		{
 			title: 'Start Game',
-			href: '/game'
+			href: '/game',
 		},
 		{
 			title: 'Settings',
-			href: '/settings'
-		}
+			href: '/settings',
+		},
 	];
 </script>
 

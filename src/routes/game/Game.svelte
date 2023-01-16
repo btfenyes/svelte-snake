@@ -9,7 +9,7 @@
 		isHorizontal,
 		isVertical,
 		getRandomInt,
-		getSnakeHead
+		getSnakeHead,
 	} from '$lib/utils';
 	import type { Direction, Food, Position, Snake, SnakePart, Turn } from '$lib/types';
 	import { currentScoreStore, DIFFICULTIES, difficultyStore, mapSizeStore } from '$lib/store';
@@ -28,12 +28,12 @@
 		snake = [...Array(startLength).keys()].map((number) => ({
 			row: startRow,
 			col: startCol + number,
-			direction: startDirection
+			direction: startDirection,
 		}));
 	};
 
 	const move = () =>
-		(snake = snake.map((snakePart, i) => {
+		(snake = snake.map((snakePart) => {
 			const isCurrentTurn = (turn: Turn, snakePart: SnakePart) =>
 				turn.col === snakePart.col && turn.row === snakePart.row;
 
@@ -41,24 +41,24 @@
 			const newDirection = currentTurn?.direction ?? snakePart.direction;
 
 			turns = turns.map((turn) =>
-				isCurrentTurn(turn, snakePart) ? { ...turn, passed: turn.passed + 1 } : turn
+				isCurrentTurn(turn, snakePart) ? { ...turn, passed: turn.passed + 1 } : turn,
 			);
 
 			return {
 				...snakePart,
 				...(currentTurn && { direction: currentTurn.direction }),
 				...(newDirection === 'right' && {
-					col: snakePart.col === $mapSizeStore.cols ? 1 : snakePart.col + 1
+					col: snakePart.col === $mapSizeStore.cols ? 1 : snakePart.col + 1,
 				}),
 				...(newDirection === 'left' && {
-					col: snakePart.col === 1 ? $mapSizeStore.cols : snakePart.col - 1
+					col: snakePart.col === 1 ? $mapSizeStore.cols : snakePart.col - 1,
 				}),
 				...(newDirection === 'up' && {
-					row: snakePart.row === 1 ? $mapSizeStore.rows : snakePart.row - 1
+					row: snakePart.row === 1 ? $mapSizeStore.rows : snakePart.row - 1,
 				}),
 				...(newDirection === 'down' && {
-					row: snakePart.row === $mapSizeStore.rows ? 1 : snakePart.row + 1
-				})
+					row: snakePart.row === $mapSizeStore.rows ? 1 : snakePart.row + 1,
+				}),
 			};
 		}));
 
@@ -68,11 +68,11 @@
 		const newTailPosition: Record<Direction, Position> = {
 			left: {
 				row: tail.row,
-				col: tail.col + 1
+				col: tail.col + 1,
 			},
 			right: { row: tail.row, col: tail.col - 1 },
 			up: { row: tail.row + 1, col: tail.col },
-			down: { row: tail.row - 1, col: tail.col }
+			down: { row: tail.row - 1, col: tail.col },
 		};
 		snake = [{ ...newTailPosition[tail.direction], direction: tail.direction }, ...snake];
 	};
@@ -86,7 +86,7 @@
 			ArrowLeft: 'left',
 			ArrowRight: 'right',
 			ArrowUp: 'up',
-			ArrowDown: 'down'
+			ArrowDown: 'down',
 		};
 
 		if (!directionMap[e.key]) {
@@ -110,8 +110,8 @@
 				direction: turnDirection,
 				col: head.col,
 				row: head.row,
-				passed: 0
-			}
+				passed: 0,
+			},
 		];
 	};
 
@@ -130,7 +130,7 @@
 
 		return {
 			col,
-			row
+			row,
 		};
 	};
 
